@@ -166,16 +166,6 @@ class ServerlessDynamodbLocal {
     migrateHandler() {
         const dynamodb = this.dynamodbOptions();
         const tables = this.tables;
-        // hacky behavior to handle billing mode change
-        tables.forEach(table => {
-          if (table.BillingMode === 'PAY_PER_REQUEST') {
-            table.ProvisionedThroughput = {
-              ReadCapacityUnits: 1,
-              WriteCapacityUnits: 1
-            }
-            delete table.BillingMode
-          }
-        })
         return BbPromise.each(tables, (table) => this.createTable(dynamodb, table));
     }
 
